@@ -169,6 +169,20 @@
                         <h2 class="heading">Experience</h2>
 
                         <div class="resume-wrap d-flex ftco-animate">
+                            <img src="images/amex.jpeg" height="80">
+                            <div class="text pl-3">
+                                <span class="date">January 2022 - June 2022 </span>
+                                <h2>Software Engineer</h2>
+                                <span class="position">American Express</span>
+                                <p>
+                                    <ul>Work on India Data Localization</ul>
+                                    <ul>Work on Card Tokenization</ul>
+
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="resume-wrap d-flex ftco-animate">
                             <img src="images/junio.jpeg" height="80">
                             <div class="text pl-3">
                                 <span class="date">November 2021 - Present </span>
@@ -974,6 +988,30 @@
     </script>
     <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js"
         data-cf-settings="5fce642b01ff5e2cb4884612-|49" defer=""></script>
+
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-analytics.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+          
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+              apiKey: "AIzaSyCHo-KYciFgIDzNo8cIpxeJTNkTtVP8B50",
+              authDomain: "portfolio-website-sidhant.firebaseapp.com",
+              projectId: "portfolio-website-sidhant",
+              storageBucket: "portfolio-website-sidhant.appspot.com",
+              messagingSenderId: "596281418916",
+              appId: "1:596281418916:web:7fbdda0004e8460910f231",
+              measurementId: "G-92LEST27PE"
+            };
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+          </script>
 
 </body>
 
