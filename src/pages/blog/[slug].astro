@@ -1,0 +1,54 @@
+---
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog");
+  const posts = allPosts.filter((entry: CollectionEntry<"blog">) => !entry.data.draft);
+  return posts.map((post: CollectionEntry<"blog">) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<"blog">;
+};
+
+const { post } = Astro.props as Props;
+const { Content } = await render(post);
+
+const pageTitle = `${post.data.title} | ${site.shortTitle}`;
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  author: {
+    "@type": "Person",
+    name: site.name,
+    url: site.website
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": new URL(`/blog/${post.slug}`, site.website).toString()
+  }
+};
+---
+
+<BaseLayout title={pageTitle} description={post.data.description} path={`/blog/${post.slug}`}>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <article class="prose">
+    <a class="back" href="/blog">← Back to writing</a>
+    <h1>{post.data.title}</h1>
+    <p class="post-meta">
+      {post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}
+    </p>
+    <Content />
+  </article>
+</BaseLayout>

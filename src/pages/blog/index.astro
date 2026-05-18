@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+
+const allPosts = await getCollection("blog");
+const posts = allPosts.filter((entry: CollectionEntry<"blog">) => !entry.data.draft);
+const sortedPosts = [...posts].sort(
+  (first, second) => second.data.publishedAt.getTime() - first.data.publishedAt.getTime()
+);
+---
+
+<BaseLayout
+  title={`Blog | ${site.shortTitle}`}
+  description="Writing on AI-native products, distributed systems, and technical leadership."
+  path="/blog"
+>
+  <section class="hero">
+    <p class="eyebrow">Writing</p>
+    <h1>Notes on building.</h1>
+    <p class="hero-lead">
+      Long-form thoughts on AI-native products, distributed systems, and the discipline of shipping software
+      that compounds.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="post-list">
+      {
+        sortedPosts.map((post) => (
+          <a class="post-link" href={`/blog/${post.slug}`}>
+            <div>
+              <span class="post-link-title">{post.data.title}</span>
+              <span class="post-link-desc">{post.data.description}</span>
+            </div>
+            <span class="post-link-date">
+              {post.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,341 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  awards,
+  certifications,
+  education,
+  impactPoints,
+  projects,
+  publications,
+  quickIntro,
+  site,
+  skillGroups,
+  ventures
+} from "../data/site";
+
+const allPosts = await getCollection("blog");
+const posts = allPosts.filter((entry: CollectionEntry<"blog">) => !entry.data.draft);
+const recentPosts = [...posts]
+  .sort((first, second) => second.data.publishedAt.getTime() - first.data.publishedAt.getTime())
+  .slice(0, 3);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  jobTitle: "CEO & Co-Founder",
+  description: site.description,
+  email: site.email,
+  telephone: site.phone,
+  url: site.website,
+  sameAs: [site.linkedIn, site.github, site.topmate],
+  worksFor: {
+    "@type": "Organization",
+    name: "GrowthOS"
+  }
+};
+---
+
+<BaseLayout title={site.shortTitle} description={site.description} path="/">
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+  <section class="hero">
+    <div class="hero-row">
+      <div class="avatar">
+        <img src={site.avatar} alt={`${site.name} portrait`} width="56" height="56" loading="eager" />
+      </div>
+      <div class="hero-meta">
+        <strong>{site.name}</strong>
+        <span>{site.location} · Available for advisory & collaborations</span>
+      </div>
+    </div>
+
+    <p class="eyebrow">Engineer turned CEO</p>
+    <h1>{site.title}</h1>
+    <p class="hero-lead">{quickIntro}</p>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="#contact">Get in touch</a>
+      <a class="btn btn-outline" href="/blog">Read the blog</a>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="section-header">
+      <h2>About</h2>
+      <p>Technical operator focused on AI-native products and resilient systems.</p>
+    </div>
+    <p class="hero-lead">
+      Over the last 5+ years, I have shipped software across enterprise and startup environments — from
+      payment infrastructure at American Express, to founding engineering at Junio and Artisan, and now
+      building GrowthOS as CEO. My edge is combining architecture depth with business urgency: scaling
+      systems, scaling teams, and scaling revenue.
+    </p>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="section-header">
+      <h2>Experience</h2>
+      <p>Roles shaping product, infrastructure, and growth outcomes.</p>
+    </div>
+    <div class="timeline">
+      {
+        ventures.map((venture) => (
+          <article class="card card-hover card-with-logo">
+            <span class="logo-tile" aria-hidden="true">
+              <img
+                src={venture.logo}
+                alt={`${venture.company} logo`}
+                width="44"
+                height="44"
+                loading="lazy"
+                class={venture.logoFit ?? "contain"}
+              />
+            </span>
+            <div>
+              <div class="card-row">
+                <h3>{venture.role}</h3>
+                <span class="card-meta">{venture.period}</span>
+              </div>
+              <p class="company">
+                <strong>{venture.company}</strong> · {venture.location}
+              </p>
+              <p>{venture.summary}</p>
+              {venture.highlights && (
+                <ul class="card-highlights">
+                  {venture.highlights.map((highlight) => (
+                    <li>{highlight}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="section-header">
+      <h2>Featured projects</h2>
+      <p>Products and platforms I have built end-to-end.</p>
+    </div>
+    <div class="project-list">
+      {
+        projects.map((project) => (
+          <article class="card card-hover">
+            <div class="card-row">
+              <h3>{project.name}</h3>
+              <span class="card-meta">{project.year}</span>
+            </div>
+            <p>{project.summary}</p>
+            <div class="project-stack">
+              {project.stack.map((tech) => (
+                <span class="badge">{tech}</span>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" id="education">
+    <div class="section-header">
+      <h2>Education</h2>
+      <p>Schools that shaped my engineering and business foundation.</p>
+    </div>
+    <div class="timeline">
+      {
+        education.map((entry) => (
+          <article class="card card-hover card-with-logo">
+            <span class="logo-tile" aria-hidden="true">
+              <img
+                src={entry.logo}
+                alt={`${entry.school} logo`}
+                width="44"
+                height="44"
+                loading="lazy"
+                class={entry.logoFit ?? "contain"}
+              />
+            </span>
+            <div>
+              <div class="card-row">
+                <h3>{entry.degree}</h3>
+                <span class="card-meta">{entry.period}</span>
+              </div>
+              <p class="company">
+                <strong>{entry.school}</strong> · {entry.field}
+              </p>
+              {entry.details && (
+                <ul class="edu-details">
+                  {entry.details.map((detail) => (
+                    <li>{detail}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" id="impact">
+    <div class="section-header">
+      <h2>Selected impact</h2>
+      <p>Outcomes from engineering and product work.</p>
+    </div>
+    <div class="impact-grid">
+      {impactPoints.map((point) => <div class="impact-item">{point}</div>)}
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="section-header">
+      <h2>Stack & skills</h2>
+      <p>Tools and disciplines I use to build and scale products.</p>
+    </div>
+    <div class="skill-groups">
+      {
+        skillGroups.map((group) => (
+          <div>
+            <p class="skill-group-label">{group.label}</p>
+            <div class="badges">
+              {group.items.map((item) => (
+                <span class="badge">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section split" id="credentials">
+    <div class="split-block">
+      <div class="section-header">
+        <h2>Certifications</h2>
+        <p>Selected programs and courses.</p>
+      </div>
+      <div class="row-list">
+        {
+          certifications.map((cert) => (
+            <div class="row-list-item">
+              <span class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+              </span>
+              <span class="row-title">{cert.name}</span>
+              <span class="row-meta">{cert.year}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="split-block">
+      <div class="section-header">
+        <h2>Awards</h2>
+        <p>Recognitions across hackathons and orgs.</p>
+      </div>
+      <div class="row-list">
+        {
+          awards.map((award) => (
+            <div class="row-list-item">
+              <span class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </span>
+              <span class="row-title">{award}</span>
+              <span class="row-meta" />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="publications">
+    <div class="section-header">
+      <h2>Publications</h2>
+      <p>Peer-reviewed research and technical writing.</p>
+    </div>
+    <div class="pub-list">
+      {
+        publications.map((pub) => (
+          <article class="pub-card">
+            <h3>{pub.title}</h3>
+            <div class="pub-meta">
+              <span>{pub.venue}</span>
+              <span>{pub.year}</span>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" id="blog">
+    <div class="section-header">
+      <h2>Writing</h2>
+      <p>Notes on founder execution, AI products, and system design.</p>
+    </div>
+    <div class="post-list">
+      {
+        recentPosts.map((post) => (
+          <a class="post-link" href={`/blog/${post.slug}`}>
+            <div>
+              <span class="post-link-title">{post.data.title}</span>
+              <span class="post-link-desc">{post.data.description}</span>
+            </div>
+            <span class="post-link-date">
+              {post.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="actions" style="margin-top: 1.25rem;">
+      <a class="btn btn-ghost" href="/blog">All posts →</a>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="section-header">
+      <h2>Get in touch</h2>
+      <p>Open to product conversations, advisory, and collaboration.</p>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-item" href={`mailto:${site.email}`}>
+        <div>
+          <span class="contact-label">Email</span>
+          <span class="contact-value">{site.email}</span>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a class="contact-item" href={site.linkedIn} target="_blank" rel="noreferrer">
+        <div>
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">sidhantgoyal501</span>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a class="contact-item" href={site.github} target="_blank" rel="noreferrer">
+        <div>
+          <span class="contact-label">GitHub</span>
+          <span class="contact-value">GoyalSidhant</span>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a class="contact-item" href={site.topmate} target="_blank" rel="noreferrer">
+        <div>
+          <span class="contact-label">Topmate</span>
+          <span class="contact-value">sidhant_goyal</span>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

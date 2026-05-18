@@ -1,0 +1,21 @@
+---
+title: "Engineering for Reliability at Scale in Payment Systems"
+description: "Lessons from designing distributed services where uptime and consistency are non-negotiable."
+publishedAt: 2026-03-01
+tags:
+  - distributed-systems
+  - reliability
+  - backend
+---
+
+When building payment infrastructure, reliability is not an optimization target. It is a baseline expectation.
+
+A few lessons that consistently mattered:
+
+- **Treat failure modes as product requirements.** Timeouts, retries, and fallback behavior should be designed early.
+- **Use observability as a design tool.** Metrics and traces are not debugging extras; they shape architecture decisions.
+- **Build for change, not just launch.** Systems should support new traffic patterns and evolving business models without a rewrite.
+
+One concrete outcome from this mindset was a **40% SLA improvement** in a file-processing workflow by redesigning partition strategy and processing flow.
+
+The highest-leverage engineering work often comes from improving system behavior under stress, not from adding another feature flag.

@@ -1,0 +1,94 @@
+---
+import { site } from "../data/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  image?: string;
+}
+
+const {
+  title = site.shortTitle,
+  description = site.description,
+  path = "/",
+  image = "/og-default.svg"
+} = Astro.props as Props;
+
+const canonical = new URL(path, Astro.site).toString();
+const socialImage = new URL(image, Astro.site).toString();
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="/favicon.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <slot name="head" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="/">
+          <span class="brand-mark">SG</span>
+          <span>Sidhant Goyal</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/#about">About</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#projects">Projects</a>
+          <a href="/#education">Education</a>
+          <a href="/#skills">Skills</a>
+          <a href="/blog">Blog</a>
+          <a href="/#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© {year} {site.name}</p>
+        <div class="footer-links">
+          <a href={site.linkedIn} target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href={site.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a href={site.topmate} target="_blank" rel="noreferrer">Topmate</a>
+          <a href={`mailto:${site.email}`}>Email</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
